@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>我与世界的往来 | 摄影作品集</title>
+    <link rel="stylesheet" href="./css/style.css" />
+  </head>
+  <body>
+    <header class="site-nav" aria-label="主导航">
+      <a class="brand" href="#home">
+        <strong>JITONG LUO</strong>
+        <span>PHOTOGRAPHY</span>
+      </a>
+      <nav>
+        <a href="#home">首页</a>
+        <a href="#map">地图</a>
+        <a href="#correspondence">来信</a>
+        <a href="#gallery">作品</a>
+        <a href="#journal">手记</a>
+        <a href="#film">胶片</a>
+        <a href="#about">关于</a>
+      </nav>
+    </header>
+
+    <main>
+      <section id="home" class="page home-page is-active" data-page>
+        <div class="home-bg" aria-hidden="true"></div>
+        <!-- 调整台灯光晕位置：修改 --lamp-x / --lamp-y 即可。 -->
+        <div class="lamp-glow" aria-hidden="true"></div>
+        <!-- 台灯附近的光尘颗粒；每个 span 的漂浮方向在 CSS 里调整。 -->
+        <div class="lamp-particles" aria-hidden="true">
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+        <div class="home-shade" aria-hidden="true"></div>
+
+        <div class="home-copy page-intro">
+          <p class="script-note">Travel & Memories</p>
+          <h1>我与世界的往来</h1>
+          <p class="subtitle">Correspondence Between the World and Me</p>
+          <span class="hairline"></span>
+          <p class="lead">地图记下我走过的地方，风景替我说出没有说完的话。</p>
+        </div>
+
+        <!-- 桌面热区。调整位置：改 css 变量 --x / --y / --w / --h。 -->
+        <div class="desktop-hotspots" aria-label="首页桌面物件入口">
+          <a class="desk-hotspot" style="--x:64%;--y:46%;--w:22%;--h:22%" href="#map">
+            <span class="hotspot-dot"></span>
+            <span class="hotspot-tip">
+              <strong>地图叙事</strong>
+              <em>Map Narrative</em>
+              <small>从地点开始，看这些照片怎么连成路线。</small>
+            </span>
+          </a>
+          <a class="desk-hotspot" style="--x:37%;--y:53%;--w:18%;--h:13%" href="#correspondence">
+            <span class="hotspot-dot"></span>
+            <span class="hotspot-tip">
+              <strong>我与世界的往来</strong>
+              <em>Correspondence</em>
+              <small>照片像回信，记录世界给我的具体回应。</small>
+            </span>
+          </a>
+          <a class="desk-hotspot" style="--x:34%;--y:79%;--w:18%;--h:18%" href="#journal">
+            <span class="hotspot-dot"></span>
+            <span class="hotspot-tip">
+              <strong>旅途笔记</strong>
+              <em>Travel Journal</em>
+              <small>放一些像手记一样的小瞬间。</small>
+            </span>
+          </a>
+          <a class="desk-hotspot" style="--x:73%;--y:86%;--w:20%;--h:15%" href="#gallery">
+            <span class="hotspot-dot"></span>
+            <span class="hotspot-tip">
+              <strong>影像之旅</strong>
+              <em>Image Journey</em>
+              <small>进入完整作品集，按地点和主题筛选。</small>
+            </span>
+          </a>
+          <a class="desk-hotspot" style="--x:90%;--y:74%;--w:13%;--h:14%" href="#film">
+            <span class="hotspot-dot"></span>
+            <span class="hotspot-tip">
+              <strong>胶片时光</strong>
+              <em>Film Life</em>
+              <small>横向浏览照片，让光线一格一格换场。</small>
+            </span>
+          </a>
+        </div>
+
+        <div class="mobile-entry-grid" aria-label="手机端入口">
+          <a href="#map">地图叙事<span>Map Narrative</span></a>
+          <a href="#correspondence">我与世界的往来<span>Correspondence</span></a>
+          <a href="#gallery">影像之旅<span>Image Journey</span></a>
+          <a href="#journal">旅途笔记<span>Travel Journal</span></a>
+          <a href="#film">胶片时光<span>Film Life</span></a>
+        </div>
+      </section>
+
+      <section id="map" class="page sub-page" data-page>
+        <div class="page-hero page-intro">
+          <small>A Map of Places</small>
+          <h2>地点地图</h2>
+          <p>这张地图不追求地理课满分。它更像一条拍摄路线：从滇池边出发，经过花市、校园和村子，最后走到河南的家乡与少林寺。</p>
+        </div>
+        <div class="map-layout">
+          <div class="map-board" id="mapBoard"></div>
+          <aside class="map-detail" id="mapDetail"></aside>
+        </div>
+      </section>
+
+      <section id="correspondence" class="page sub-page" data-page>
+        <div class="page-hero page-intro">
+          <small>Correspondence Between the World and Me</small>
+          <h2>我与世界的往来</h2>
+          <p>我拍到的不是标准景点，而是世界回给我的一些具体瞬间：一只猫、一束花、一面旧墙、一盏夜灯。</p>
+        </div>
+        <div class="letter-grid" id="letterGrid"></div>
+      </section>
+
+      <section id="gallery" class="page sub-page" data-page>
+        <div class="page-hero page-intro">
+          <small>Image Journey</small>
+          <h2>影像之旅</h2>
+          <p>按地点和主题筛选作品。点击照片可以打开全屏预览。</p>
+        </div>
+        <div class="filters">
+          <select id="placeFilter" aria-label="按地点筛选"></select>
+          <select id="themeFilter" aria-label="按主题筛选"></select>
+          <input id="searchInput" type="search" placeholder="搜索标题、地点或说明" />
+          <span id="photoCount"></span>
+        </div>
+        <div class="photo-grid" id="photoGrid"></div>
+      </section>
+
+      <section id="journal" class="page sub-page" data-page>
+        <div class="page-hero page-intro">
+          <small>Travel Journal</small>
+          <h2>旅途笔记</h2>
+          <p>这里放一些“不一定最大片，但很像当时心情”的照片。像写在本子边上的一句话。</p>
+        </div>
+        <div class="journal-list" id="journalList"></div>
+      </section>
+
+      <section id="film" class="page sub-page" data-page>
+        <div class="page-hero page-intro">
+          <small>Film Life</small>
+          <h2>胶片时光</h2>
+          <p>横向滑动浏览照片，看颜色、光线和地点怎么一格一格换场。</p>
+        </div>
+        <div class="film-strip" id="filmStrip"></div>
+      </section>
+
+      <section id="about" class="page sub-page" data-page>
+        <div class="page-hero page-intro">
+          <small>About</small>
+          <h2>关于我</h2>
+          <p>我拍照不是为了把地方拍成标准答案。我更喜欢那些有生活感的瞬间：人刚好路过，花刚好亮起来，猫刚好不理人。</p>
+        </div>
+        <div class="about-block">
+          <img class="reveal-photo" src="./images/about/portrait.jpg" alt="归乡与日常影像" />
+          <article>
+            <h3>我的摄影想法</h3>
+            <p>我喜欢拍真实生活里“不太像大片”的东西。它们普通，但一旦被认真看，就会有自己的表情。</p>
+            <p>相机对我来说不是证明“我去过哪里”的工具，而是记录“我当时为什么停下来”的工具。</p>
+            <a href="mailto:3849959680@qq.com">3849959680@qq.com</a>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <div class="lightbox" id="lightbox" aria-hidden="true">
+      <button class="lightbox-close" id="lightboxClose" type="button" aria-label="关闭预览">×</button>
+      <img id="lightboxImage" alt="" />
+      <aside>
+        <small id="lightboxMeta"></small>
+        <h3 id="lightboxTitle"></h3>
+        <p id="lightboxDesc"></p>
+      </aside>
+    </div>
+
+    <script src="./js/data.js"></script>
+    <script src="./js/main.js"></script>
+  </body>
+</html>
