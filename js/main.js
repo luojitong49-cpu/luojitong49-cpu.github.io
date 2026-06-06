@@ -6,6 +6,10 @@ const state = {
   search: "",
   activePlace: data.places[0]?.id || ""
 };
+const lightboxState = {
+  photos: [],
+  index: -1
+};
 
 const $ = (selector) => document.querySelector(selector);
 
@@ -43,6 +47,7 @@ function setActiveMapPoint() {
 
 function showPage(pageId) {
   state.page = pageId;
+  document.body.dataset.currentPage = pageId;
   document.querySelectorAll("[data-page]").forEach((page) => {
     page.classList.toggle("is-active", page.id === pageId);
   });
@@ -51,6 +56,7 @@ function showPage(pageId) {
   });
   window.scrollTo({ top: 0, behavior: "instant" });
   observeRevealItems();
+  if (pageId === "film") playFilmUnspool();
 }
 
 function syncPageFromHash() {
@@ -188,7 +194,7 @@ function renderGallery() {
     .join("");
 
   grid.querySelectorAll(".photo-card").forEach((card) => {
-    card.addEventListener("click", () => openLightbox(card.dataset.photo));
+    card.addEventListener("click", () => openLightbox(card.dataset.photo, photos));
   });
   observeRevealItems();
 }
@@ -219,34 +225,168 @@ function renderJournal() {
 function renderFilm() {
   const strip = $("#filmStrip");
   if (!strip) return;
-  strip.innerHTML = data.photos
+  const filmPhotos = data.photos
     .filter((_, index) => index % 4 === 0)
-    .slice(0, 42)
-    .map(
-      (photo, index) => `
-      <article class="film-frame" style="--reveal-delay:${Math.min(index * 28, 260)}ms">
-        <img class="reveal-photo" src="${photo.image}" alt="${photo.alt}" loading="lazy" />
-        <strong>${String(index + 1).padStart(2, "0")} / ${photo.title}</strong>
-        <small>${placeName(photo.placeId)} / ${photo.date}</small>
-      </article>
-    `
-    )
+    .slice(0, 42);
+
+  const reels = [filmPhotos.slice(0, 14), filmPhotos.slice(14, 28), filmPhotos.slice(28, 42)];
+  strip.innerHTML = reels
+    .map((reelPhotos, reelIndex) => {
+      const startNumber = reelIndex * 14;
+      return `
+        <section class="film-reel-block">
+          <div class="film-reel-label">
+            <span>ROLL ${String(reelIndex + 1).padStart(2, "0")}</span>
+            <small>${reelPhotos.length} frames / drag to unspool</small>
+          </div>
+          <div class="film-reel" data-reel="${reelIndex}">
+            ${reelPhotos
+              .map(
+                (photo, index) => `
+                <button class="film-frame" style="--frame:${startNumber + index};--reveal-delay:${Math.min(index * 34, 260)}ms" type="button" data-photo="${photo.id}">
+                  <span class="film-frame-number">${String(startNumber + index + 1).padStart(2, "0")}</span>
+                  <img class="reveal-photo" src="${photo.image}" alt="${photo.alt}" loading="lazy" />
+                  <strong>${photo.title}</strong>
+                  <small>${placeName(photo.placeId)} / ${photo.date}</small>
+                </button>
+              `
+              )
+              .join("")}
+            <div class="film-reel-tail" aria-hidden="true">
+              <span></span>
+              <strong>未展开</strong>
+              <small>Pull the film</small>
+            </div>
+          </div>
+        </section>
+      `;
+    })
     .join("");
+
+  strip.querySelectorAll(".film-reel").forEach((reel) => {
+    const reelPhotos = reels[Number(reel.dataset.reel)] || filmPhotos;
+    reel.querySelectorAll(".film-frame").forEach((frame) => {
+      frame.addEventListener("click", (event) => {
+        if (reel.dataset.dragMoved === "true") {
+          event.preventDefault();
+          return;
+        }
+        openLightbox(frame.dataset.photo, reelPhotos);
+      });
+    });
+    bindFilmDrag(reel);
+  });
+
+  playFilmUnspool();
 }
 
-function openLightbox(photoId) {
+function playFilmUnspool() {
+  const reels = document.querySelectorAll(".film-reel");
+  reels.forEach((reel, index) => {
+    reel.classList.remove("is-unspooled");
+    void reel.offsetWidth;
+    reel.style.setProperty("--unspool-delay", `${index * 160}ms`);
+    reel.classList.add("is-unspooled");
+  });
+}
+
+function bindFilmDrag(strip) {
+  if (strip.dataset.dragBound === "true") return;
+  strip.dataset.dragBound = "true";
+  strip.dataset.dragMoved = "false";
+
+  let isDown = false;
+  let startX = 0;
+  let startScroll = 0;
+  let moved = false;
+
+  strip.addEventListener("pointerdown", (event) => {
+    isDown = true;
+    moved = false;
+    strip.dataset.dragMoved = "false";
+    startX = event.clientX;
+    startScroll = strip.scrollLeft;
+    strip.classList.add("is-dragging");
+    strip.setPointerCapture?.(event.pointerId);
+  });
+
+  strip.addEventListener("pointermove", (event) => {
+    if (!isDown) return;
+    const distance = event.clientX - startX;
+    if (Math.abs(distance) > 8) moved = true;
+    strip.scrollLeft = startScroll - distance;
+  });
+
+  const endDrag = (event) => {
+    if (!isDown) return;
+    isDown = false;
+    strip.classList.remove("is-dragging");
+    strip.releasePointerCapture?.(event.pointerId);
+    strip.dataset.dragMoved = moved ? "true" : "false";
+    if (moved) window.setTimeout(() => { strip.dataset.dragMoved = "false"; }, 140);
+  };
+
+  strip.addEventListener("pointerup", endDrag);
+  strip.addEventListener("pointercancel", endDrag);
+  strip.addEventListener("pointerleave", endDrag);
+}
+
+function updateLightboxNav() {
+  const total = lightboxState.photos.length;
+  const prevButton = $("#lightboxPrev");
+  const nextButton = $("#lightboxNext");
+  if (!prevButton || !nextButton) return;
+
+  prevButton.disabled = total < 2;
+  nextButton.disabled = total < 2;
+  prevButton.setAttribute("aria-label", total < 2 ? "没有上一张照片" : "上一张照片");
+  nextButton.setAttribute("aria-label", total < 2 ? "没有下一张照片" : "下一张照片");
+}
+
+function playLightboxSwitch(direction = 0) {
+  const lightbox = $("#lightbox");
+  if (!lightbox) return;
+  lightbox.dataset.direction = direction < 0 ? "prev" : "next";
+  lightbox.classList.remove("is-switching");
+  void lightbox.offsetWidth;
+  lightbox.classList.add("is-switching");
+  window.setTimeout(() => lightbox.classList.remove("is-switching"), 360);
+}
+
+function renderLightboxPhoto(photo, direction = 0) {
+  $("#lightboxImage").src = photo.image;
+  $("#lightboxImage").alt = photo.alt;
+  $("#lightboxMeta").textContent = `${lightboxState.index + 1} / ${lightboxState.photos.length} · ${placeName(photo.placeId)} / ${photo.theme} / ${photo.date}`;
+  $("#lightboxTitle").textContent = photo.title;
+  $("#lightboxDesc").textContent = photo.description;
+  updateLightboxNav();
+  playLightboxSwitch(direction);
+}
+
+function openLightbox(photoId, photoGroup = data.photos) {
   const photo = data.photos.find((item) => item.id === photoId);
   const lightbox = $("#lightbox");
   if (!photo || !lightbox) return;
 
-  $("#lightboxImage").src = photo.image;
-  $("#lightboxImage").alt = photo.alt;
-  $("#lightboxMeta").textContent = `${placeName(photo.placeId)} / ${photo.theme} / ${photo.date}`;
-  $("#lightboxTitle").textContent = photo.title;
-  $("#lightboxDesc").textContent = photo.description;
+  lightboxState.photos = photoGroup.length ? photoGroup : data.photos;
+  lightboxState.index = lightboxState.photos.findIndex((item) => item.id === photoId);
+  if (lightboxState.index < 0) {
+    lightboxState.photos = data.photos;
+    lightboxState.index = data.photos.findIndex((item) => item.id === photoId);
+  }
+  renderLightboxPhoto(lightboxState.photos[lightboxState.index], 0);
   lightbox.classList.add("is-open");
   lightbox.setAttribute("aria-hidden", "false");
   document.body.classList.add("has-lightbox");
+}
+
+function stepLightbox(direction) {
+  const lightbox = $("#lightbox");
+  const total = lightboxState.photos.length;
+  if (!lightbox?.classList.contains("is-open") || total < 2) return;
+
+  lightboxState.index = (lightboxState.index + direction + total) % total;
+  renderLightboxPhoto(lightboxState.photos[lightboxState.index], direction);
 }
 
 function closeLightbox() {
@@ -256,6 +396,8 @@ function closeLightbox() {
   lightbox.setAttribute("aria-hidden", "true");
   $("#lightboxImage").removeAttribute("src");
   document.body.classList.remove("has-lightbox");
+  lightboxState.photos = [];
+  lightboxState.index = -1;
 }
 
 let revealObserver;
@@ -295,11 +437,15 @@ function bindEvents() {
   });
 
   $("#lightboxClose")?.addEventListener("click", closeLightbox);
+  $("#lightboxPrev")?.addEventListener("click", () => stepLightbox(-1));
+  $("#lightboxNext")?.addEventListener("click", () => stepLightbox(1));
   $("#lightbox")?.addEventListener("click", (event) => {
     if (event.target.id === "lightbox") closeLightbox();
   });
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape") closeLightbox();
+    if (event.key === "ArrowLeft") stepLightbox(-1);
+    if (event.key === "ArrowRight") stepLightbox(1);
   });
 }
 
