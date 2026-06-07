@@ -866,6 +866,8 @@ h2 {
   width: 100%;
   aspect-ratio: 4 / 5;
   object-fit: cover;
+  clip-path: inset(3%);
+  transform: scale(1.06);
 }
 
 .journal-entry h3 {
@@ -1008,6 +1010,7 @@ h2 {
   width: 100%;
   aspect-ratio: 3 / 2;
   object-fit: cover;
+  transform: scale(1.08);
   border: 1px solid rgba(232, 205, 161, 0.22);
   background: #080604;
   filter: sepia(0.12) saturate(0.9) contrast(1.08);
@@ -2124,8 +2127,8 @@ h2 {
 
   body[data-current-page="home"] .brand {
     position: absolute;
-    left: 7.3vw;
-    top: 5.8vh;
+    left: 7.4vw;
+    top: 5.9vh;
     z-index: 20;
     opacity: 1;
     padding: 0;
@@ -2137,17 +2140,19 @@ h2 {
   }
 
   body[data-current-page="home"] .brand strong {
-    color: #fff7ea;
-    font-size: clamp(19px, 6.1vw, 27px);
-    letter-spacing: 0.19em;
-    text-shadow: 0 0 18px rgba(255, 239, 214, 0.18);
+    color: rgba(239, 229, 211, 0.9);
+    font-size: clamp(11px, 3.55vw, 16px);
+    font-weight: 400;
+    letter-spacing: 0.24em;
+    text-shadow: none;
   }
 
   body[data-current-page="home"] .brand span {
-    margin-top: 9px;
-    color: var(--gold);
-    font-size: clamp(12px, 3.8vw, 17px);
-    letter-spacing: 0.34em;
+    margin-top: 7px;
+    color: rgba(214, 166, 96, 0.88);
+    font-size: clamp(7px, 2.35vw, 11px);
+    font-weight: 400;
+    letter-spacing: 0.4em;
   }
 
   body[data-current-page="home"] .mobile-menu-link {
@@ -2156,9 +2161,9 @@ h2 {
     right: 7vw;
     top: 5.2vh;
     z-index: 21;
-    width: 44px;
-    height: 40px;
-    gap: 8px;
+    width: 38px;
+    height: 35px;
+    gap: 7px;
     opacity: 1;
     pointer-events: auto;
   }
@@ -2179,7 +2184,7 @@ h2 {
   }
 
   body[data-current-page="home"] .home-bg {
-    background-image: url("../images/home/mobile-cover-bg.png");
+    background-image: url("../images/home/mobile-cover-final.png");
     background-position: center;
     background-size: cover;
     animation: mobileFocusBreath 6.6s ease-in-out infinite;
@@ -2220,9 +2225,9 @@ h2 {
 
   body[data-current-page="home"] .home-copy {
     left: 7.8vw;
-    top: 22.4vh;
+    top: 23.4vh;
     z-index: 10;
-    width: 64vw;
+    width: 58vw;
     opacity: 1;
     pointer-events: none;
   }
@@ -2233,11 +2238,12 @@ h2 {
 
   body[data-current-page="home"] h1 {
     max-width: 5.7em;
-    color: #f5eee2;
-    font-size: clamp(40px, 11.45vw, 56px);
-    line-height: 1.22;
-    letter-spacing: 0.075em;
-    text-shadow: 0 12px 34px rgba(0, 0, 0, 0.78), 0 0 20px rgba(255, 238, 210, 0.12);
+    color: rgba(235, 228, 216, 0.9);
+    font-size: clamp(30px, 8.85vw, 42px);
+    font-weight: 400;
+    line-height: 1.28;
+    letter-spacing: 0.095em;
+    text-shadow: none;
   }
 
   body[data-current-page="home"] .mobile-title-break {
@@ -2245,26 +2251,28 @@ h2 {
   }
 
   body[data-current-page="home"] .subtitle {
-    max-width: 245px;
-    margin: 21px 0 22px;
-    color: var(--gold);
-    font-size: clamp(16px, 4.6vw, 23px);
-    line-height: 1.34;
+    max-width: 210px;
+    margin: 18px 0 19px;
+    color: rgba(214, 166, 96, 0.88);
+    font-size: clamp(12px, 3.35vw, 17px);
+    font-weight: 400;
+    line-height: 1.42;
   }
 
   body[data-current-page="home"] .hairline {
-    width: 28px;
+    width: 24px;
     height: 2px;
-    margin-bottom: 26px;
+    margin-bottom: 22px;
     background: var(--gold);
     box-shadow: 0 0 16px rgba(216, 166, 95, 0.5);
   }
 
   body[data-current-page="home"] .lead {
-    max-width: 270px;
-    color: rgba(244, 234, 216, 0.78);
-    font-size: clamp(12px, 3.35vw, 16px);
-    line-height: 1.95;
+    max-width: 230px;
+    color: rgba(224, 215, 200, 0.74);
+    font-size: clamp(9px, 2.65vw, 13px);
+    font-weight: 400;
+    line-height: 1.9;
     letter-spacing: 0.13em;
   }
 
@@ -2283,8 +2291,8 @@ h2 {
   body[data-current-page="home"] .mobile-entry-grid::before {
     content: "";
     position: absolute;
-    left: 23.2%;
-    top: 58.7%;
+    left: 23.4%;
+    top: 58.3%;
     width: 14.5%;
     height: 8%;
     background:
@@ -2312,40 +2320,40 @@ h2 {
 
   body[data-current-page="home"] .mobile-entry-card {
     grid-template-columns: 1fr;
-    top: 69.15%;
-    width: 24%;
-    height: 15.9%;
-    gap: 6px;
-    padding: 14px 8px;
-    border-radius: 26px;
+    top: 68.8%;
+    width: 24.8%;
+    height: 16.85%;
+    gap: 8px;
+    padding: 16px 9px;
+    border-radius: 28px;
   }
 
   body[data-current-page="home"] .mobile-entry-card:nth-child(1) {
-    left: 9.4%;
+    left: 7.6%;
   }
 
   body[data-current-page="home"] .mobile-entry-card:nth-child(2) {
-    left: 38%;
+    left: 37.6%;
   }
 
   body[data-current-page="home"] .mobile-entry-card:nth-child(3) {
-    left: 66.6%;
+    left: 67.6%;
   }
 
   body[data-current-page="home"] .mobile-entry-pill {
-    top: 88.85%;
-    width: 31.2%;
-    height: 5.45%;
-    grid-template-columns: 22px auto;
+    top: 89.1%;
+    width: 33.2%;
+    height: 5.8%;
+    grid-template-columns: 24px auto;
     justify-content: center;
     align-items: center;
-    column-gap: 10px;
-    padding: 7px 11px;
+    column-gap: 12px;
+    padding: 8px 13px;
     border-radius: 999px;
   }
 
   body[data-current-page="home"] .mobile-entry-pill:nth-child(4) {
-    left: 18.3%;
+    left: 15.8%;
   }
 
   body[data-current-page="home"] .mobile-entry-pill:nth-child(5) {
@@ -2359,8 +2367,8 @@ h2 {
 
   body[data-current-page="home"] .mobile-entry-grid svg {
     display: block;
-    width: 34px;
-    height: 34px;
+    width: 45px;
+    height: 45px;
     stroke: var(--gold);
     stroke-width: 1.4;
     fill: none;
@@ -2368,16 +2376,16 @@ h2 {
   }
 
   body[data-current-page="home"] .mobile-entry-pill svg {
-    width: 21px;
-    height: 21px;
+    width: 27px;
+    height: 27px;
     grid-row: 1 / 3;
   }
 
   body[data-current-page="home"] .mobile-entry-grid strong {
     display: block;
     max-width: 100%;
-    color: #f7ecdc;
-    font-size: clamp(10px, 2.85vw, 13px);
+    color: rgba(239, 229, 211, 0.92);
+    font-size: clamp(12px, 3.55vw, 17px);
     font-weight: 400;
     line-height: 1.35;
     letter-spacing: 0.06em;
@@ -2386,15 +2394,15 @@ h2 {
   }
 
   body[data-current-page="home"] .mobile-entry-card:nth-child(2) strong {
-    font-size: clamp(9px, 2.45vw, 12px);
+    font-size: clamp(10px, 3vw, 14px);
     letter-spacing: 0.02em;
   }
 
   body[data-current-page="home"] .mobile-entry-grid span {
     display: block;
     max-width: 100%;
-    color: rgba(244, 234, 216, 0.84);
-    font-size: clamp(6px, 1.72vw, 8px);
+    color: rgba(232, 220, 203, 0.86);
+    font-size: clamp(8px, 2.22vw, 10px);
     line-height: 1.35;
     letter-spacing: 0.11em;
     text-align: center;
@@ -2404,7 +2412,7 @@ h2 {
   body[data-current-page="home"] .mobile-entry-card em {
     display: block;
     color: var(--gold);
-    font-size: 20px;
+    font-size: 25px;
     font-style: normal;
     line-height: 1;
   }

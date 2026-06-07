@@ -10,8 +10,81 @@ const lightboxState = {
   photos: [],
   index: -1
 };
+const EXCLUDED_PHOTO_IDS = new Set(["laoyuhe-05", "laoyuhe-06", "laoyuhe-07", "laoyuhe-08"]);
+const JOURNAL_SELECTION = [
+  {
+    id: "zhenping-01",
+    title: "孩子看镜头的那一秒",
+    text: "这张我会保留。它没有复杂构图，只有一个很直接的眼神，像旅途中突然被生活叫住。"
+  },
+  {
+    id: "kmust-08",
+    title: "红旗和蓝天",
+    text: "红色很亮，天空很干净，放在手记里像一个明确的标点：那天的天气确实不错。"
+  },
+  {
+    id: "dounan-45",
+    title: "白色兰花的暗部",
+    text: "花不一定要拍得热闹。这张更安静，黑背景把花瓣托出来，像走进市场后忽然听见的低声。"
+  },
+  {
+    id: "dounan-56",
+    title: "一束小菊的颜色",
+    text: "它有一种轻快的秩序感：很多颜色挤在一起，但没有乱，像旅途里很小的一点开心。"
+  },
+  {
+    id: "shaolinsi-08",
+    title: "斗拱下面的红与蓝",
+    text: "古建筑最迷人的地方是结构。颜色很重，线条很稳，看起来比语言更有耐心。"
+  },
+  {
+    id: "shaolinsi-15",
+    title: "塔林的影子",
+    text: "石头、阳光和阴影站在一起，画面不吵，但时间感很重，适合放进手记里慢慢看。"
+  },
+  {
+    id: "haiyan-40",
+    title: "海面上的一排人",
+    text: "这张有风景，也有人。远处的队列让水面有了方向，不只是好看，还有一点等待感。"
+  },
+  {
+    id: "haiyan-47",
+    title: "海边桌上的灯",
+    text: "天快暗下来的时候，灯比风景更像主角。它把一小块桌面照亮，也把那天留住。"
+  }
+];
+const FILM_REELS = [
+  {
+    title: "ROLL 01 / 黑白胶卷",
+    note: "Black & White",
+    ids: ["haiyan-02", "haiyan-03", "haiyan-04", "haiyan-05", "haiyan-06", "haiyan-07", "haiyan-08", "kmust-02", "kmust-03", "kmust-04", "zhenping-04", "zhenping-05"]
+  },
+  {
+    title: "ROLL 02 / 花蕊胶卷",
+    note: "Flower Details",
+    ids: ["dounan-32", "dounan-33", "dounan-36", "dounan-41", "dounan-42", "dounan-43", "dounan-45", "dounan-47", "dounan-48", "dounan-49", "dounan-52", "dounan-56"]
+  },
+  {
+    title: "ROLL 03 / 风景胶卷",
+    note: "Landscape",
+    ids: ["haiyan-09", "haiyan-10", "haiyan-13", "haiyan-21", "haiyan-40", "haiyan-47", "haiyan-48", "wulongcun-01", "wulongcun-02", "wulongcun-03", "laoyuhe-01", "laoyuhe-02"]
+  },
+  {
+    title: "ROLL 04 / 古建筑胶卷",
+    note: "Ancient Architecture",
+    ids: ["shaolinsi-05", "shaolinsi-06", "shaolinsi-08", "shaolinsi-09", "shaolinsi-10", "shaolinsi-11", "shaolinsi-13", "shaolinsi-15", "shaolinsi-16", "haiyan-28", "haiyan-30", "haiyan-33"]
+  }
+];
 
 const $ = (selector) => document.querySelector(selector);
+
+function visiblePhotos() {
+  return data.photos.filter((photo) => !EXCLUDED_PHOTO_IDS.has(photo.id));
+}
+
+function photoById(id) {
+  return visiblePhotos().find((photo) => photo.id === id);
+}
 
 function placeName(placeId) {
   return data.places.find((place) => place.id === placeId)?.name || placeId;
@@ -22,7 +95,7 @@ function getPlace(placeId) {
 }
 
 function photosByPlace(placeId) {
-  return data.photos.filter((photo) => photo.placeId === placeId);
+  return visiblePhotos().filter((photo) => photo.placeId === placeId);
 }
 
 function buildMapRouteSvg() {
@@ -163,7 +236,7 @@ function renderFilters() {
 
 function filteredPhotos() {
   const keyword = state.search.trim().toLowerCase();
-  return data.photos.filter((photo) => {
+  return visiblePhotos().filter((photo) => {
     const placeMatch = state.place === "all" || photo.placeId === state.place;
     const themeMatch = state.theme === "all" || photo.theme === state.theme;
     const text = [photo.title, photo.description, photo.theme, placeName(photo.placeId), photo.date].join(" ").toLowerCase();
@@ -202,19 +275,19 @@ function renderGallery() {
 function renderJournal() {
   const list = $("#journalList");
   if (!list) return;
-  const journalPhotos = data.photos
-    .filter((photo) => ["手记", "归乡", "校园"].includes(photo.theme))
-    .slice(0, 8);
+  const journalItems = JOURNAL_SELECTION
+    .map((item) => ({ ...item, photo: photoById(item.id) }))
+    .filter((item) => item.photo);
 
-  list.innerHTML = journalPhotos
+  list.innerHTML = journalItems
     .map(
-      (photo, index) => `
+      (item, index) => `
       <article class="journal-entry">
-        <img class="reveal-photo" style="--reveal-delay:${index * 60}ms" src="${photo.image}" alt="${photo.alt}" loading="lazy" />
+        <img class="reveal-photo" style="--reveal-delay:${index * 60}ms" src="${item.photo.image}" alt="${item.photo.alt}" loading="lazy" />
         <div>
-          <small>${placeName(photo.placeId)} / ${photo.date}</small>
-          <h3>${photo.title}</h3>
-          <p>${photo.description}</p>
+          <small>${placeName(item.photo.placeId)} / ${item.photo.date}</small>
+          <h3>${item.title}</h3>
+          <p>${item.text}</p>
         </div>
       </article>
     `
@@ -225,22 +298,22 @@ function renderJournal() {
 function renderFilm() {
   const strip = $("#filmStrip");
   if (!strip) return;
-  const filmPhotos = data.photos
-    .filter((_, index) => index % 4 === 0)
-    .slice(0, 42);
+  const reels = FILM_REELS.map((reel) => ({
+    ...reel,
+    photos: reel.ids.map(photoById).filter(Boolean)
+  }));
 
-  const reels = [filmPhotos.slice(0, 14), filmPhotos.slice(14, 28), filmPhotos.slice(28, 42)];
   strip.innerHTML = reels
-    .map((reelPhotos, reelIndex) => {
-      const startNumber = reelIndex * 14;
+    .map((reel, reelIndex) => {
+      const startNumber = reelIndex * 12;
       return `
         <section class="film-reel-block">
           <div class="film-reel-label">
-            <span>ROLL ${String(reelIndex + 1).padStart(2, "0")}</span>
-            <small>${reelPhotos.length} frames / drag to unspool</small>
+            <span>${reel.title}</span>
+            <small>${reel.photos.length} frames / ${reel.note}</small>
           </div>
           <div class="film-reel" data-reel="${reelIndex}">
-            ${reelPhotos
+            ${reel.photos
               .map(
                 (photo, index) => `
                 <button class="film-frame" style="--frame:${startNumber + index};--reveal-delay:${Math.min(index * 34, 260)}ms" type="button" data-photo="${photo.id}">
@@ -264,7 +337,7 @@ function renderFilm() {
     .join("");
 
   strip.querySelectorAll(".film-reel").forEach((reel) => {
-    const reelPhotos = reels[Number(reel.dataset.reel)] || filmPhotos;
+    const reelPhotos = reels[Number(reel.dataset.reel)]?.photos || visiblePhotos();
     reel.querySelectorAll(".film-frame").forEach((frame) => {
       frame.addEventListener("click", (event) => {
         if (reel.dataset.dragMoved === "true") {
@@ -364,15 +437,15 @@ function renderLightboxPhoto(photo, direction = 0) {
 }
 
 function openLightbox(photoId, photoGroup = data.photos) {
-  const photo = data.photos.find((item) => item.id === photoId);
+  const photo = photoById(photoId);
   const lightbox = $("#lightbox");
   if (!photo || !lightbox) return;
 
-  lightboxState.photos = photoGroup.length ? photoGroup : data.photos;
+  lightboxState.photos = (photoGroup.length ? photoGroup : visiblePhotos()).filter((item) => !EXCLUDED_PHOTO_IDS.has(item.id));
   lightboxState.index = lightboxState.photos.findIndex((item) => item.id === photoId);
   if (lightboxState.index < 0) {
-    lightboxState.photos = data.photos;
-    lightboxState.index = data.photos.findIndex((item) => item.id === photoId);
+    lightboxState.photos = visiblePhotos();
+    lightboxState.index = lightboxState.photos.findIndex((item) => item.id === photoId);
   }
   renderLightboxPhoto(lightboxState.photos[lightboxState.index], 0);
   lightbox.classList.add("is-open");
